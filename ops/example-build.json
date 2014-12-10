@@ -1,0 +1,34 @@
+{
+    "builders": [{
+        "type": "amazon-ebs",
+        "access_key": "<AWS_ACCESS_KEY>",
+        "secret_key": "<AWS_SECRET_KEY>",
+        "region": "us-east-1",
+        "source_ami": "ami-de0d9eb7",
+        "instance_type": "t1.micro",
+        "ssh_username": "ubuntu",
+        "ami_name": "atlas-example {{timestamp}}"
+    }],
+    "push": {
+      "name": "<atlas-username>/example-build-configuration"
+    },
+    "provisioners": [
+    {
+        "type": "shell",
+        "inline": [
+            "sleep 30",
+            "sudo apt-get update",
+            "sudo apt-get install apache2 -y"
+        ]
+    }],
+    "post-processors": [
+      {
+        "type": "atlas",
+        "artifact": "<atlas-username>/example-artifact",
+        "artifact_type": "ami",
+        "metadata": {
+          "created_at": "{{timestamp}}"
+        }
+      }
+    ]
+}
